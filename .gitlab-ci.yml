@@ -1,0 +1,101 @@
+# image: node:20  # Base image for most jobs
+
+# stages:
+#   - install
+#   - lint
+#   - build
+#   - test
+#   - deploy
+  
+  
+
+# variables:
+#   CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+
+# cache:
+#   key: ${CI_COMMIT_REF_SLUG}
+#   paths:
+#     - node_modules/
+#     - $CYPRESS_CACHE_FOLDER
+
+# install:
+#   stage: install
+#   script:
+#     - echo "Installing dependencies..."
+#     - npm ci
+#   artifacts:
+#     paths:
+#       - node_modules/
+#     expire_in: 1 day
+
+# lint:
+#   stage: lint
+#   script:
+#     - echo "Running ESLint..."
+#     - npm run lint
+#   dependencies:
+#     - install
+
+# build:
+#   stage: build
+#   script:
+#     - echo "Building Next.js app..."
+#     - npm run build
+#   artifacts:
+#     paths:
+#       - .next/
+#       - public/
+#       - next.config.js
+#     expire_in: 1 day
+#   dependencies:
+#     - install
+
+# test:
+#   # Use a valid Cypress browser image that exists
+#   image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+#   stage: test
+#   script:
+#     - echo "Starting Next.js app in the background..."
+#     - npm install -g serve
+#     - npm install -g wait-on
+#     - serve -s .next -p 3000 &
+#     - wait-on http://localhost:3000 -t 60000
+#     - echo "Running Cypress tests..."
+#     - npx cypress run --config baseUrl=http://localhost:3000
+#   dependencies:
+#     - install
+#     - build
+#   artifacts:
+#     when: always
+#     paths:
+#       - cypress/videos/
+#       - cypress/screenshots/
+#     expire_in: 1 day
+
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - echo "Deploying to Vercel..."
+#     - npm install -g vercel
+#     - vercel pull --yes --environment=production --token=$VERCEL_AUTH_TOKEN
+#     - vercel build --token=$VERCEL_AUTH_TOKEN
+#     - vercel deploy --prebuilt --token=$VERCEL_AUTH_TOKEN
+#   environment:
+#     name: production
+#     url: https://freelance-management-navy.vercel.app/
+#   only:
+#     - main
+
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - echo "Deploying to Netlify..."
+#     - npm install -g netlify-cli
+#     - netlify deploy --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --prod
+#   environment:
+#     name: production
+#     url: https://freelance-management.netlify.app
+#   only:
+#     - main
